@@ -16,7 +16,7 @@ export default function Table({ getEmployees }: { getEmployees: Employee[] }) {
     const { setEmployees, employees } = useMyContext();
 
     useEffect(() => {
-        if (!employees) {
+        if (employees.length === 0) {
             setEmployees(getEmployees)
         }
     }, [])

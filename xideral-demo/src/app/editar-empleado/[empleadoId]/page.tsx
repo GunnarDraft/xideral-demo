@@ -16,8 +16,9 @@ export default function EditarEmpleado({ params }: { params: { empleadoId: strin
 
     const router = useRouter();
 
-    const { handleSubmit, control, reset } = useForm<Employee & User>({
+    const { handleSubmit, control } = useForm<Employee & User>({
         defaultValues: {
+            id: empleado?.id,
             empName: empleado?.empName,
             empFirstName: empleado?.empFirstName,
             empLastName: empleado?.empLastName,
@@ -29,10 +30,11 @@ export default function EditarEmpleado({ params }: { params: { empleadoId: strin
         },
     })
     const onSubmit: SubmitHandler<Employee & User> = (data) => {
-        
-        const existingEmployeeIndex = employees.findIndex((employee) => employee.id === data.id);
 
-       
+        const existingEmployeeIndex = employees.findIndex((employee) => employee.id === data.id);
+        
+        //sin validaciones de schema por falta de tiempo
+
         if (existingEmployeeIndex !== -1) {
             const updatedEmployees = [...employees];
             updatedEmployees[existingEmployeeIndex] = {
@@ -45,30 +47,20 @@ export default function EditarEmpleado({ params }: { params: { empleadoId: strin
             };
             setEmployees(updatedEmployees);
 
-            const existingUserIndex = users.findIndex((user) => user.employeeId === data.id);
+            const existingUserIndex = users.findIndex((user) => user.id === data.id);
 
             const updatedUsers = [...users];
             if (existingUserIndex !== -1) {
                 updatedUsers[existingUserIndex] = {
                     ...updatedUsers[existingUserIndex],
+                    usrName: data.usrName || '', 
                     usrEmail: data.usrEmail || '',
-                    usrName: data.usrName || '',
-                    usrPassword: data.usrPassword || '',
-                    usrAreas: data.usrAreas || '',
+                    usrPassword: data.usrPassword || '', 
                 };
-            } else {
-                updatedUsers.push({
-                    id: (users.length + 1).toString(),
-                    employeeId: data.id,
-                    usrEmail: data?.usrEmail || '',
-                    usrName: data?.usrName || '',
-                    usrPassword: data?.usrPassword || '',
-                    usrAreas: data?.usrAreas || '',
-                });
-            }
+            }  
             setUsers(updatedUsers);
         }
-        console.log('back', existingEmployeeIndex   )
+        console.log('back', existingEmployeeIndex)
         router.back();
     };
     return <main>
@@ -88,7 +80,7 @@ export default function EditarEmpleado({ params }: { params: { empleadoId: strin
                     <Controller
                         render={({ field }) => <TextField fullWidth label="Apellido paterno" variant="outlined" {...field} />}
                         name="empFirstName"
-                        control={control} 
+                        control={control}
                     />
                 </Flex>
                 <Flex>
@@ -129,15 +121,15 @@ export default function EditarEmpleado({ params }: { params: { empleadoId: strin
                         </Flex>
                         <Flex>
                             <Controller
-                                render={({ field }) => <TextField fullWidth label="Contraseña" type="password" variant="outlined" {...field} />}
-                                name="usrPassword"
+                                render={({ field }) => <TextField fullWidth label="Correo" variant="outlined" {...field} />}
+                                name="usrEmail"
                                 control={control}
                             />
                         </Flex>
                         <Flex>
                             <Controller
-                                render={({ field }) => <TextField fullWidth label="Areas" variant="outlined" {...field} />}
-                                name="usrAreas"
+                                render={({ field }) => <TextField fullWidth label="Contraseña" type="password" variant="outlined" {...field} />}
+                                name="usrPassword"
                                 control={control}
                             />
                         </Flex>
@@ -148,7 +140,7 @@ export default function EditarEmpleado({ params }: { params: { empleadoId: strin
                 <span style={{ flex: 1 }}>&nbsp;</span>
                 <Button variant="contained" color='secondary' onClick={() => router.back()}>Cancelar</Button>
                 <span>&nbsp;</span>
-                <Button variant="contained" color="primary" onClick={() => handleSubmit(onSubmit)} >Guardar</Button>
+                <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)} >Guardar</Button>
             </Flex>
         </Container>}
     </main>

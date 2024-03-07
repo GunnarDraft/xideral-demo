@@ -4,28 +4,30 @@ import { useEffect, useState } from 'react';
 import { useMyContext } from '@/app/provider'
 
 import { redirect, useRouter } from 'next/navigation';
-import { Button, Card, Checkbox, Dialog, Divider, IconButton } from '@mui/material';
+import { Button, Card, Checkbox, Dialog, Divider, FormControlLabel, IconButton } from '@mui/material';
 import SchemaIcon from '@mui/icons-material/Schema';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 
 import { Container, Flex, P, Title } from '@/styles/styles'
 import { Employee, User } from '@/interfaces/types';
+import { Controller, useForm } from 'react-hook-form';
+import Link from 'next/link';
 
 export default function Info({ getEmployees, getUsers, params }: { getEmployees: Employee[], getUsers: User[], params: { empleadoId: string } }) {
 
     const { employees, users, setEmployees, setUsers } = useMyContext();
 
     useEffect(() => {
-        setEmployees(getEmployees)
-        setUsers(getUsers)
+        if (employees.length === 0) { setEmployees(getEmployees) }
+        if (users.length === 0) { setUsers(getUsers) }
     }, [])
 
     const empleado = employees.find(emp => emp.id === params.empleadoId)
     const usuario = users.find(emp => emp.id === params.empleadoId)
 
     const [open, setOpen] = useState(false);
-  
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -35,6 +37,12 @@ export default function Info({ getEmployees, getUsers, params }: { getEmployees:
     };
     const router = useRouter();
 
+    const { control, handleSubmit } = useForm();
+
+    const onSubmit = (data: any) => {
+        //valores de los checkbox sin controlar 
+        console.log('Valores seleccionados:', data);
+    };
     return (<div>
         <Container style={{ width: 600, margin: 'auto' }}>
             <Title>
@@ -57,12 +65,13 @@ export default function Info({ getEmployees, getUsers, params }: { getEmployees:
                         <SchemaIcon />
                     </IconButton>
                     <span style={{ flex: 1 }} />
-                    <IconButton
-                        color="secondary" aria-label="Editar"
-                        onClick={() => { params ? redirect(`/editar-empleado/${params.empleadoId}`) : redirect('/empleados') }}
-                    >
-                        <EditIcon />
-                    </IconButton>
+                    <Link href={`/editar-empleado/${empleado?.id}`}>
+                        <IconButton
+                            color="secondary" aria-label="Editar"
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </Link>
                 </Flex>
                 <Divider />
                 <P><b>Usuario</b></P>
@@ -77,17 +86,31 @@ export default function Info({ getEmployees, getUsers, params }: { getEmployees:
         <Dialog onClose={handleClose} open={open}>
             <Title>Áreas Asociadas <IconButton onClick={handleClose}><CloseIcon /></IconButton></Title>
             {/* controlar valores */}
-            <Container>
-                <Flex><P>Area 1</P> <Checkbox value={true}></Checkbox></Flex>
-                <Flex><P>Area 2</P> <Checkbox value={true}></Checkbox></Flex>
-                <Flex><P>Area 3</P> <Checkbox value={true}></Checkbox></Flex>
-                <Flex><P>Area 4</P> <Checkbox value={true}></Checkbox></Flex>
-            </Container>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Container>
+                    {usuario?.usrAreas.map((option, index) => (
+                        <div key={index}>
+                            <Controller
+                                name={`${index}`}
+                                control={control}
+                                defaultValue={false}
+                                render={({ field }) => (
+
+                                    <FormControlLabel
+                                        control={<Checkbox {...field} />}
+                                        label={`Area ${option}`}
+                                    />
+                                )}
+                            />
+                        </div>
+                    ))}
+                </Container>
+            </form>
             <Flex>
                 <span style={{ flex: 1 }}>&nbsp;</span>
                 <Button variant="contained" color='secondary' onClick={() => handleClose()}>Cancelar</Button>
                 <span>&nbsp;</span>
-                <Button variant="contained" color="primary"  >Guardar</Button>
+                <Button variant="contained" color="primary" onClick={handleSubmit(onSubmit)}>Guardar</Button>
             </Flex>
         </Dialog>
     </div>);

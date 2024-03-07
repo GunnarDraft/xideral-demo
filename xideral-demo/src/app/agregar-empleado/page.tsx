@@ -20,14 +20,13 @@ export default function AgregarEmpleado() {
             empBirthDate: '',
             empSystemAccess: false,
             usrName: '',
-            usrPassword: '',
-            usrAreas: [''],
+            usrPassword: '', 
         },
     })
 
     const onSubmit: SubmitHandler<Employee & User> = (data) => {
-        //delete log
-        console.log(data)
+
+        //sin validaciones de schema por falta de tiempo
         
         setEmployees([...employees, {
             id: (employees.length + 1).toString(),
@@ -37,7 +36,6 @@ export default function AgregarEmpleado() {
             empBirthDate: data.empBirthDate,
             empSystemAccess: data.empSystemAccess
         }]) 
-        //implementar validacion de usuario
         if (users) {   
             setUsers([...users, {
                 id: (users.length + 1).toString(),
@@ -45,7 +43,7 @@ export default function AgregarEmpleado() {
                 usrName: data?.usrName,
                 usrEmail: data?.usrEmail,
                 usrPassword: data?.usrPassword,
-                usrAreas: data?.usrAreas
+                usrAreas: [] //hardcode
             }])
         }
         router.back()
@@ -110,15 +108,15 @@ export default function AgregarEmpleado() {
                             </Flex>
                             <Flex>
                                 <Controller
-                                    render={({ field }) => <TextField fullWidth label="Contraseña" type="password" variant="outlined" {...field} />}
-                                    name="usrPassword"
+                                    render={({ field }) => <TextField fullWidth label="Correo" variant="outlined" {...field} />}
+                                    name="usrEmail"
                                     control={control}
                                 />
                             </Flex>
                             <Flex>
                                 <Controller
-                                    render={({ field }) => <TextField fullWidth label="Areas" variant="outlined" {...field} />}
-                                    name="usrAreas"
+                                    render={({ field }) => <TextField fullWidth label="Contraseña" type="password" variant="outlined" {...field} />}
+                                    name="usrPassword"
                                     control={control}
                                 />
                             </Flex>
