@@ -3,11 +3,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 Maquetado de Prototipo demo de componentes: tabla, detalle, form de edición, form de agregado, modal.
 componentes controlados, manejo de hooks, context, MUI, Nextjs, react-hook-forms, styled-component y typescript.
 
-notas: por falta de tiempo hay algunas caracteristicas que no estan implementadas al 100% como la implementacion de datepickers validaciones de fechas y expresiones regulares.
+notas: por falta de tiempo hay algunas caracteristicas que no estan implementadas al 100% como la implementacion de datepickers validaciones de fechas y expresiones regulares o de schema dentro de los formularios.
 
 ## Getting Started
 
-First, run the development server:
+First, run the development server: json-server db.json
 
 ```bash
 npm i 
